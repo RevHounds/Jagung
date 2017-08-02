@@ -2,51 +2,6 @@ var map;
 var minZoomLevel = 5;
 var mapContainer = document.getElementById("map");
 
-      function convertToX(lon){
-        lon = radians(lon);
-        var a = (256 / PI) * pow(2, 1);
-        var b = lon + PI;
-        return a * b;
-      }
-
-      function convertToY(lat){
-        lat = radians(lat);
-        var a = (256 / PI) * pow(2, 1);
-        var b = tan(PI / 4 + lat / 2);
-        var c = PI - log(b);
-        return a * c;
-      }
-
-      function drawProvinceMap(coordinates){
-        document.createElement('canvas');
-        var minX = 9999999, maksY = 0;
-        for(var i=0; i<coordinates.length; i++){
-          for(var j=0; j<coordinates[i].length; j++){
-            for(var k=0; k<coordinates[i][j].length; k++){
-              var x = (coordinates[i][j][k][0]);
-              if(x < minX) minX = x;
-              var y = (coordinates[i][j][k][1]);
-              if(y > maksY) maksY = y;
-            }
-          }
-        }
-          for(var i=0; i<coordinates.length; i++){
-            beginPath();
-            for(var j=0; j<coordinates[i].length; j++){
-              for(var k=0; k<coordinates[i][j].length; k++){
-                var x = (coordinates[i][j][k][0]);
-                var y = (coordinates[i][j][k][1]);
-                x = convertToX(x) - convertToX(minX);
-                y = convertToY(y) - convertToY(maksY);
-                x = x*10+10;
-                y = y*10+100;
-                vertex(x, y);
-              }
-            }
-            endPath();
-          }
-        }
-
       function componentToHex(c) {
         var hex = c.toString(16);
         return hex.length == 1 ? "0" + hex : hex;
@@ -110,12 +65,8 @@ var mapContainer = document.getElementById("map");
        });
 
        map.data.addListener('click', function(event) {
-         province_coordinate = event.feature;
-         var mapContainer = document.getElementById("map");
-         mapContainer.parentNode.removeChild(mapContainer);
-         map = document.createElement("provinceLevel");
-         var provinceCoordinate = []
-         provinceCoordinate = event.feature.getProperty('NAME_1');
-         drawProvinceMap(provinceCoordinate);
+         provinceName = event.feature.getProperty('NAME_1');
+         localStorage.setItem("province", provinceName);
+         window.location.href = 'province-level-detail.html';
        });
      }
